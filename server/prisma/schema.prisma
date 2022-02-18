@@ -1,0 +1,34 @@
+datasource postgres {
+  provider = "postgresql"
+  url      = env("POSTGRESQL_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  createdAt    DateTime     @default(now())
+  experience   Experience?  @relation(name: "experience", fields: [experienceId], references: [id])
+  experienceId String?
+  experiences  Experience[] @relation(name: "experiences")
+  firstName    String?
+  id           String       @id @default(cuid())
+  lastName     String?
+  password     String
+  roles        String[]
+  updatedAt    DateTime     @updatedAt
+  username     String       @unique
+}
+
+model Experience {
+  createdAt   DateTime @default(now())
+  description String?
+  host        User?    @relation(name: "experiences", fields: [hostId], references: [id])
+  hostId      String?
+  id          String   @id @default(cuid())
+  location    String?
+  members     User[]   @relation(name: "experience")
+  title       String?
+  updatedAt   DateTime @updatedAt
+}
